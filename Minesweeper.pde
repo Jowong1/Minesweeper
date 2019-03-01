@@ -1,27 +1,56 @@
 
 
 import de.bezier.guido.*;
-//Declare and initialize NUM_ROWS and NUM_COLS = 20
+int MAP_SIZEX = 700;
+int MAP_SIZEY = 700;
+int NUM_ROWS = 20;
+int NUM_COLS = 20;
+int count = 0;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 
 void setup ()
 {
-    size(400, 400);
+    size(750, 700); // I have a map size variable too, so this "screen size" has to be constant
     textAlign(CENTER,CENTER);
-    
     // make the manager
     Interactive.make( this );
-    
-    //your code to initialize buttons goes here
-    
-    
-    
-    setBombs();
+    buttons = new MSButton[NUM_ROWS][NUM_COLS];
+    bombs = new ArrayList <MSButton>();
+    for(int r = 0; r < NUM_ROWS; r++){
+      for(int c = 0; c < NUM_COLS; c++){
+        buttons[r][c] = new MSButton(r,c);
+      }
+    }
+    for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs
+      setBombs();
+    }
 }
 public void setBombs()
 {
-    //your code
+  // For a random number of bombs on the map
+  /*
+  int rRow = (int)(Math.random()*NUM_ROWS);
+  int rCol = (int)(Math.random()*NUM_COLS);
+  if(!bombs.contains(buttons[rRow][rCol])){
+    bombs.add(buttons[rRow][rCol]);
+  }
+  */
+  //////////////////////////////////////////
+  
+  // For a set number of bombs on the map
+  //
+  int rRow = (int)(Math.random()*NUM_ROWS);
+  int rCol = (int)(Math.random()*NUM_COLS);
+  while(bombs.contains(buttons[rRow][rCol])){
+    rRow = (int)(Math.random()*NUM_ROWS);
+    rCol = (int)(Math.random()*NUM_COLS);
+  }
+  if(!bombs.contains(buttons[rRow][rCol])){ // Just insurance!
+    bombs.add(buttons[rRow][rCol]);
+  }
+  //
+  //////////////////////////////////////////
 }
 
 public void draw ()
@@ -37,7 +66,7 @@ public boolean isWon()
 }
 public void displayLosingMessage()
 {
-    //your code here
+    //println("You lost lol");
 }
 public void displayWinningMessage()
 {
@@ -53,8 +82,8 @@ public class MSButton
     
     public MSButton ( int rr, int cc )
     {
-        // width = 400/NUM_COLS;
-        // height = 400/NUM_ROWS;
+        width = MAP_SIZEX/NUM_COLS;
+        height = MAP_SIZEY/NUM_ROWS;
         r = rr;
         c = cc; 
         x = c*width;
@@ -71,25 +100,59 @@ public class MSButton
     {
         return clicked;
     }
+    public boolean setClicked() // My own: sets the input button as 'clicked'
+    {
+        clicked = true;
+        return clicked;
+    }
     // called by manager
     
     public void mousePressed () 
     {
-        clicked = true;
-        //your code here
+        if(mouseButton == RIGHT){
+          marked = !marked;
+          if(marked == false){
+            clicked = false;
+          }
+          // Fail safe
+        }else{ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
+          clicked = true;
+          count = 0;
+          if(countBombs(r, c) > 0){
+            setLabel("" + countBombs(r, c));
+          }else{ // count > 1000
+            for(int rI = r - 1; rI < r + 2; rI++){
+              for(int cI = c - 1; cI < c + 2; cI++){
+                if(isValid(rI,cI) == true && buttons[rI][cI].isClicked() == false){
+                  buttons[rI][cI].mousePressed();
+                  //buttons[rI][cI].setClicked();
+                }
+              }
+            }
+          }
+        }
     }
 
     public void draw () 
     {    
-        if (marked)
+        count++;
+        if (marked){
             fill(0);
-        // else if( clicked && bombs.contains(this) ) 
-        //     fill(255,0,0);
-        else if(clicked)
+        }else if( clicked && bombs.contains(this) ) {
+             fill(255,0,0);
+             for(int r = 0; r < buttons.length; r++){
+               for(int c = 0; c < buttons[0].length; c++){
+                 if(bombs.contains(buttons[r][c])){
+                   buttons[r][c].setClicked();
+                 }
+               }
+             }
+             displayLosingMessage();
+        }else if(clicked){
             fill( 200 );
-        else 
+        }else{
             fill( 100 );
-
+        }
         rect(x, y, width, height);
         fill(0);
         text(label,x+width/2,y+height/2);
@@ -100,16 +163,25 @@ public class MSButton
     }
     public boolean isValid(int r, int c)
     {
-        //your code here
+      if(r >= 0 && r <= NUM_ROWS - 1 && c >= 0 && c <= NUM_COLS - 1){
+        return true;
+      }else{
         return false;
+      }
     }
     public int countBombs(int row, int col)
     {
-        int numBombs = 0;
-        //your code here
-        return numBombs;
+      int numBombs = 0;
+      for(int r = row - 1; r < row + 2; r++){
+        for(int c = col - 1; c < col + 2; c++){
+          if(isValid(r,c) == true && bombs.contains(buttons[r][c])){
+            numBombs++;
+          }
+        }
+      }
+      if(bombs.contains(buttons[row][col])){ // Just a little bit of insurance
+        numBombs--;
+      }
+      return numBombs;
     }
 }
-
-
-
