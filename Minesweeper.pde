@@ -118,14 +118,13 @@ public class MSButton
         }else{ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
           clicked = true;
           count = 0;
-          if(countBombs(r, c) > 0){
+          if(countBombs(r, c) > 0 && bombs.contains(this) == false){
             setLabel("" + countBombs(r, c));
           }else{ // count > 1000
             for(int rI = r - 1; rI < r + 2; rI++){
               for(int cI = c - 1; cI < c + 2; cI++){
-                if(isValid(rI,cI) == true && buttons[rI][cI].isClicked() == false){
+                if(isValid(rI,cI) == true && bombs.contains(this) == false && buttons[rI][cI].isClicked() == false){
                   buttons[rI][cI].mousePressed();
-                  //buttons[rI][cI].setClicked();
                 }
               }
             }
