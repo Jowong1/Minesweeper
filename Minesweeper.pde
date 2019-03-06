@@ -1,13 +1,13 @@
-
-
 import de.bezier.guido.*;
 int MAP_SIZEX = 700;
 int MAP_SIZEY = 700;
 int NUM_ROWS = 20;
 int NUM_COLS = 20;
 int count = 0;
+boolean firstClick = true;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
+private ArrayList <MSButton> aroundClick;
 
 void setup ()
 {
@@ -16,14 +16,12 @@ void setup ()
     // make the manager
     Interactive.make( this );
     buttons = new MSButton[NUM_ROWS][NUM_COLS];
+    aroundClick = new ArrayList <MSButton>();
     bombs = new ArrayList <MSButton>();
     for(int r = 0; r < NUM_ROWS; r++){
       for(int c = 0; c < NUM_COLS; c++){
         buttons[r][c] = new MSButton(r,c);
       }
-    }
-    for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs
-      setBombs();
     }
 }
 public void setBombs()
@@ -42,13 +40,12 @@ public void setBombs()
   //
   int rRow = (int)(Math.random()*NUM_ROWS);
   int rCol = (int)(Math.random()*NUM_COLS);
-  while(bombs.contains(buttons[rRow][rCol])){
+  while(bombs.contains(buttons[rRow][rCol]) == true || aroundClick.contains(buttons[rRow][rCol]) == true){
     rRow = (int)(Math.random()*NUM_ROWS);
     rCol = (int)(Math.random()*NUM_COLS);
   }
-  if(!bombs.contains(buttons[rRow][rCol])){ // Just insurance!
-    bombs.add(buttons[rRow][rCol]);
-  }
+  bombs.add(buttons[rRow][rCol]);
+
   //
   //////////////////////////////////////////
 }
@@ -109,6 +106,17 @@ public class MSButton
     
     public void mousePressed () 
     {
+        if(firstClick == true){
+          for(int row = r-1; row < r+2; row++){
+            for(int col = c-1; col < c+2; col++){
+              aroundClick.add(buttons[row][col]);
+            }
+          }
+          for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs
+            setBombs();
+          }
+          firstClick = false;
+        }
         if(mouseButton == RIGHT){
           marked = !marked;
           if(marked == false){
