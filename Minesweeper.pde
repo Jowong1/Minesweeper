@@ -143,9 +143,8 @@ public class MSButton
     public void draw () 
     {    
         count++;
-        if (marked){
-            fill(0);
-        }else if( clicked && bombs.contains(this) ) {
+        
+        if( clicked && bombs.contains(this) ) {
              fill(255,0,0);
              for(int r = 0; r < buttons.length; r++){
                for(int c = 0; c < buttons[0].length; c++){
@@ -162,7 +161,17 @@ public class MSButton
         }
         rect(x, y, width, height);
         fill(0);
-        text(label,x+width/2,y+height/2);
+        if(marked){
+          fill(255,0,0);
+          ellipse(x+width/2,y+height/2 - 5,5,15);
+          ellipse(x+width/2,y+height/2 + 10,4,4);
+          //fill(139,69,19);
+          //rect(x+24/3.5, y+24/2, 24/6.25, 24/2);
+          //fill(165,42,42);
+          //rect(x+24/3.5, y+24/3.5, 24/2, 24/3.1);
+        }else{
+          text(label,x+width/2,y+height/2);
+        }
     }
     public void setLabel(String newLabel)
     {
