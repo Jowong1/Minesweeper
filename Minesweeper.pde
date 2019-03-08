@@ -159,12 +159,19 @@ public class MSButton
         }else{
             fill( 100 );
         }
+        if(marked){
+          fill(0);
+        }
         rect(x, y, width, height);
         fill(0);
         if(marked){
+          //ellipse(x+width/2,y+height/2,width/2 - i,height/2 - i);
           fill(255,0,0);
-          ellipse(x+width/2,y+height/2 - 5,5,15);
-          ellipse(x+width/2,y+height/2 + 10,4,4);
+          timer = timer + change;
+          ellipse(x+width/2,y+height/2 - 5,6,15);
+          ellipse(x+width/2,y+height/2 + 10,6,6);
+          
+          
           //fill(139,69,19);
           //rect(x+24/3.5, y+24/2, 24/6.25, 24/2);
           //fill(165,42,42);
