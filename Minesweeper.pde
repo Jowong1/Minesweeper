@@ -4,6 +4,8 @@ int MAP_SIZEY = 700;
 int NUM_ROWS = 20;
 int NUM_COLS = 20;
 int count = 0;
+int timer = 0;
+int change = 1;
 boolean firstClick = true;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
@@ -166,10 +168,21 @@ public class MSButton
         fill(0);
         if(marked){
           //ellipse(x+width/2,y+height/2,width/2 - i,height/2 - i);
-          fill(255,0,0);
+          
           timer = timer + change;
-          ellipse(x+width/2,y+height/2 - 5,6,15);
-          ellipse(x+width/2,y+height/2 + 10,6,6);
+          if(timer < 0){
+            change = 1;
+          }
+          if(timer > 10){
+            change = -2;
+          }
+          fill(timer*2);
+          rectMode(CENTER);
+          rect(x+width/2,y+height/2,timer,timer);
+          rectMode(CORNER);
+          fill(255,0,0);
+          ellipse(x+width/2,y+height/2 - 5 + timer,6,15);
+          ellipse(x+width/2,y+height/2 + 10 + timer,6,6);
           
           
           //fill(139,69,19);
