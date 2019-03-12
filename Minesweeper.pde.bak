@@ -55,20 +55,9 @@ public void setBombs()
 
 public void draw ()
 {
-    timer++;
     background( 0 );
-    if(isWon()){
+    if(isWon())
         displayWinningMessage();
-    }
-    if(timer < 100){
-        move = 0;
-      }else if(timer >= 100 && timer < 105){
-        move = move - 2;
-      }else if(timer >= 105 && timer < 110){
-        move = move + 2;
-      }else if(timer >= 110){
-        timer = 0;
-      }
 }
 public boolean isWon()
 {
@@ -90,11 +79,9 @@ public class MSButton
     private float x,y, width, height;
     private boolean clicked, marked;
     private String label;
-//    private int timer;
     
     public MSButton ( int rr, int cc )
     {
-        timer = 0;
         width = MAP_SIZEX/NUM_COLS;
         height = MAP_SIZEY/NUM_ROWS;
         r = rr;
@@ -191,7 +178,7 @@ public class MSButton
             //  change = -2;
             //}
           //}
-          //    this.move();
+          this.move();
           //println(timer);
           //fill(timer*2);
           //rectMode(CENTER);
@@ -211,8 +198,16 @@ public class MSButton
         
     }
     public void move(){
-//      timer++;
-      
+      timer++;
+      if(timer < 100){
+        move = 0;
+      }else if(timer >= 100 && timer < 105){
+        move = move - 2;
+      }else if(timer >= 105 && timer < 110){
+        move = move + 2;
+      }else if(timer >= 110){
+        timer = 0;
+      }
     }
     public void setLabel(String newLabel)
     {
