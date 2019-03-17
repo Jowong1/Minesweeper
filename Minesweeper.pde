@@ -12,6 +12,7 @@ color HIGHLIGHT_COLOR = color(255, 236, 33);
 boolean rightClick = false;
 boolean highlight = false;
 boolean reset = false;
+boolean gameOver = false;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 private ArrayList <MSButton> aroundClick;
@@ -21,6 +22,9 @@ Reset map
 special ability
 settings???
 bombs
+change marked if gameover
+win message
+lose message
 */
 void setup ()
 {
@@ -159,6 +163,16 @@ public class MSButton
             clicked = false;
           }
           // Fail safe
+        }else if(bombs.contains(this) && firstClick == false){
+             for(int r = 0; r < buttons.length; r++){
+               for(int c = 0; c < buttons[0].length; c++){
+                 if(bombs.contains(buttons[r][c])){
+                   buttons[r][c].setClicked();
+                 }
+               }
+             }
+             gameOver = true;
+             displayLosingMessage();
         }else{ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
           clicked = true;
           count = 0;
@@ -181,16 +195,8 @@ public class MSButton
     {    
         
         count++;
-        if( clicked && bombs.contains(this) ) {
+        if(gameOver == true && clicked && bombs.contains(this) ) {
              fill(255,0,0);
-             for(int r = 0; r < buttons.length; r++){
-               for(int c = 0; c < buttons[0].length; c++){
-                 if(bombs.contains(buttons[r][c])){
-                   buttons[r][c].setClicked();
-                 }
-               }
-             }
-             displayLosingMessage();
         }else if(clicked){
             fill( 200 );
         }else{
@@ -215,6 +221,27 @@ public class MSButton
         }
         */
         rect(x, y, width, height);
+        if(gameOver == true && clicked && bombs.contains(this) && marked == false){
+          int myRad;
+             //for(int i = 0; i < width; i+=10){
+             //  ellipse(x + i, y, 10,10);
+             //}
+             fill(10);
+             ellipse(x + width/2, y + height/1.7, width/1.7, height/1.7);
+             //fill(0);
+             //ellipse(x + width/1.7, y + height/1.7, 8, 8);
+             noFill();
+             stroke(255);
+             beginShape();
+             curveVertex(x + 22, y + 1);//
+             curveVertex(x + 27, y + 7);
+             curveVertex(x + 22, y + 11);
+             curveVertex(x + 21, y + 12);
+             curveVertex(x + 20, y + 14);
+             curveVertex(x + 18, y + 18);//
+             endShape();
+        }
+        
         if(highlight){
         fill(HIGHLIGHT_COLOR);
         noStroke();
@@ -228,7 +255,7 @@ public class MSButton
           rect(x+1,y+1, width, height/14);
         }
         if(mouseY < y && mouseY > y - height && mouseX > x - width && mouseX < x + width*2 ){
-          rect(x+1,y + height - height/14, width, height/10);
+          rect(x+1,y + height - (height/14) - 1, width, height/10);
         }
         }
         stroke(0);
@@ -239,6 +266,14 @@ public class MSButton
           ellipse(x+width/2,(y+height/2 + 10) + move,width/6, width/6);
         }else{
           text(label,x+width/2,y+height/2);
+        }
+        if(gameOver == true && bombs.contains(this) == false && marked == true){
+          stroke(255,0,0);
+          strokeWeight(2);
+          line(x + 2, y + 2, x + width - 2, y + height - 2);
+          line(x + width - 2, y + 2, x + 2, y + height - 2);
+          strokeWeight(1);
+          stroke(0);
         }
         
     }
