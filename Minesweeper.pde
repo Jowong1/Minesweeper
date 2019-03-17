@@ -222,7 +222,7 @@ public class MSButton
           rect(x+1,y+1, width/14, height);
         }
         if(mouseX < x && mouseX > x - width && mouseY > y - height && mouseY < y + height*2 ){
-          rect(x + width - width/14,y+1, width/10, height);
+          rect(x + width - (width/14) - 1,y+1, width/10, height);
         }
         if(mouseY > y + height && mouseY < y + height*2 && mouseX > x - width && mouseX < x + width*2 ){
           rect(x+1,y+1, width, height/14);
