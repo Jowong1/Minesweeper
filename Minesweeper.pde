@@ -8,10 +8,20 @@ int change = 1;
 int timer = 0;
 float move = 0;
 boolean firstClick = true;
+color HIGHLIGHT_COLOR = color(255, 236, 33);
+boolean rightClick = false;
+boolean highlight = false;
+boolean reset = false;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 private ArrayList <MSButton> aroundClick;
 
+/*
+Reset map
+special ability
+settings???
+bombs
+*/
 void setup ()
 {
     size(750, 700); // I have a map size variable too, so this "screen size" has to be constant
@@ -60,15 +70,26 @@ public void draw ()
     if(isWon()){
         displayWinningMessage();
     }
-    if(timer < 100){
+    if(timer < 130){
         move = 0;
-      }else if(timer >= 100 && timer < 105){
+      }else if(timer >= 130 && timer < 135){
         move = move - 2;
-      }else if(timer >= 105 && timer < 110){
+      }else if(timer >= 135 && timer < 140){
         move = move + 2;
-      }else if(timer >= 110){
+      }else if(timer >= 140){
         timer = 0;
       }
+}
+public void keyPressed(){
+      if(key == TAB){
+        rightClick = !rightClick;
+      }
+      if(key == 'q' || key == 'Q'){
+        highlight = !highlight;
+      }
+    if(key == 'r' || key == 'R'){
+      reset = true;
+    }
 }
 public boolean isWon()
 {
@@ -118,11 +139,10 @@ public class MSButton
         clicked = true;
         return clicked;
     }
-    // called by manager
     
     public void mousePressed () 
     {
-        if(firstClick == true){
+        if(firstClick == true && mouseButton != RIGHT){
           for(int row = r-1; row < r+2; row++){
             for(int col = c-1; col < c+2; col++){
               aroundClick.add(buttons[row][col]);
@@ -133,7 +153,7 @@ public class MSButton
           }
           firstClick = false;
         }
-        if(mouseButton == RIGHT){
+        if(mouseButton == RIGHT || rightClick == true){
           marked = !marked;
           if(marked == false){
             clicked = false;
@@ -159,6 +179,7 @@ public class MSButton
 
     public void draw () 
     {    
+        
         count++;
         if( clicked && bombs.contains(this) ) {
              fill(255,0,0);
@@ -178,33 +199,44 @@ public class MSButton
         if(marked){
           fill(0);
         }
+        if(mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height){
+          //fill(255, 255, 255, 50);
+          //fill(255, 245, 142);
+          rectMode(CENTER);
+          //rect(x, y, 300,300);
+          rectMode(CORNER);
+
+        }
+        /*
+        //HIGHLIGHT MODE
+        if(!marked && mouseX > x - width && mouseX < x + width + width && mouseY > y - height && mouseY < y + height + height){
+          fill(255, 255, 255, 50);
+          //rect(x + width/4, y + height/4, height/2, width/2);
+        }
+        */
         rect(x, y, width, height);
+        if(highlight){
+        fill(HIGHLIGHT_COLOR);
+        noStroke();
+        if(mouseX > x + width && mouseX < x + width*2 && mouseY > y - height && mouseY < y + height*2 ){
+          rect(x+1,y+1, width/14, height);
+        }
+        if(mouseX < x && mouseX > x - width && mouseY > y - height && mouseY < y + height*2 ){
+          rect(x + width - width/14,y+1, width/10, height);
+        }
+        if(mouseY > y + height && mouseY < y + height*2 && mouseX > x - width && mouseX < x + width*2 ){
+          rect(x+1,y+1, width, height/14);
+        }
+        if(mouseY < y && mouseY > y - height && mouseX > x - width && mouseX < x + width*2 ){
+          rect(x+1,y + height - height/14, width, height/10);
+        }
+        }
+        stroke(0);
         fill(0);
         if(marked){
-          //ellipse(x+width/2,y+height/2,width/2 - i,height/2 - i);
-          
-          //if(mouseX > x && mouseX < x+ width){
-            //if(timer < 0){
-            //  change = 1;
-            //}
-            //if(timer > 10){
-            //  change = -2;
-            //}
-          //}
-          //    this.move();
-          //println(timer);
-          //fill(timer*2);
-          //rectMode(CENTER);
-          //rect(x+width/2,y+height/2,timer + change,timer + change);
-          //rectMode(CORNER);
           fill(255,0,0);
-          ellipse(x+width/2,(y+height/2 - 5) + move,6,15);
-          ellipse(x+width/2,(y+height/2 + 10) + move,6,6);
-          
-          //fill(139,69,19);
-          //rect(x+24/3.5, y+24/2, 24/6.25, 24/2);
-          //fill(165,42,42);
-          //rect(x+24/3.5, y+24/3.5, 24/2, 24/3.1);
+          ellipse(x+width/2,(y+height/2 - 5) + move,width/6, width/2);
+          ellipse(x+width/2,(y+height/2 + 10) + move,width/6, width/6);
         }else{
           text(label,x+width/2,y+height/2);
         }
