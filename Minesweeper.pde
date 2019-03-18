@@ -11,7 +11,7 @@ boolean firstClick = true;
 color HIGHLIGHT_COLOR = color(255, 236, 33);
 boolean rightClick = false;
 boolean highlight = false;
-boolean reset = false;
+boolean resetThis = false;
 boolean gameOver = false;
 boolean restartGame = false;
 boolean canReset = false;
@@ -85,7 +85,7 @@ public void keyPressed(){
         highlight = !highlight;
       }
     if(key == 'r' || key == 'R'){
-      reset = true;
+      resetThis = true;
     }
 }
 public boolean isWon()
@@ -313,9 +313,9 @@ public class MSButton
 }
 public void draw ()
 {
-    if(reset == true){
-      restart();
-      reset = false;
+    if(resetThis == true){
+      restartThis();
+      resetThis = false;
       gameOver = false;
       restartGame = false;
       firstClick = true;
@@ -353,33 +353,33 @@ public void draw ()
      rect(width - 50, height - 100, 50, 50);
    }
 }
+public void mousePressed(){
+  if(gameOver == true && canReset == true){
+    //width/2 - 25, height/2 + 27.5, 150, 30
+    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+      restartThis();
+      gameOver = false;
+      restartGame = false;
+      firstClick = true;
+      canReset = false;
+    }
+  }
+  if(gameOver == true && canReset == false){
+    canReset = true;
+  }
+}
 //public void mousePressed(){
-//  if(gameOver == true && canReset == true){
+//  if(gameOver == true){
 //    //width/2 - 25, height/2 + 27.5, 150, 30
 //    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
 //      restart();
 //      gameOver = false;
 //      restartGame = false;
 //      firstClick = true;
-//      canReset = false;
 //    }
 //  }
-//  if(gameOver == true && canReset == false){
-//    canReset = true;
-//  }
 //}
-public void mousePressed(){
-  if(gameOver == true){
-    //width/2 - 25, height/2 + 27.5, 150, 30
-    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
-      restart();
-      gameOver = false;
-      restartGame = false;
-      firstClick = true;
-    }
-  }
-}
-public void restart(){
+public void restartThis(){
       for(int r = 0; r < buttons.length; r++){
         for(int c = 0; c < buttons[0].length; c++){
           if(buttons[r][c].isMarked() == true){
