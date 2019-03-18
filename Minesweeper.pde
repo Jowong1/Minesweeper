@@ -80,11 +80,11 @@ public void mousePressed(){
   if(gameOver == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
     if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+      restartThis();
       gameOver = false;
       restartGame = false;
       firstClick = true;
       rightClick = false;
-      restartThis();
     }
   }
 }
@@ -177,6 +177,7 @@ public class MSButton
     }
     public void mousePressed () 
     {
+      if(gameOver == false){
         if(firstClick == true && mouseButton == LEFT){
           for(int row = r-1; row < r+2; row++){
             for(int col = c-1; col < c+2; col++){
@@ -218,7 +219,7 @@ public class MSButton
             }
           }
         }
-        
+      }
     }
 
     public void draw () 
