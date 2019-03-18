@@ -15,6 +15,7 @@ boolean resetThis = false;
 boolean gameOver = false;
 boolean restartGame = false;
 boolean canReset = false;
+boolean displayLose = true;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 private ArrayList <MSButton> aroundClick;
@@ -177,7 +178,7 @@ public class MSButton
                }
              }
              gameOver = true;
-        }else{ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
+        }else if(displayLose == false){ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
           clicked = true;
           count = 0;
           if(isValid(r,c) == true && countBombs(r, c) > 0 && bombs.contains(this) == false){
@@ -278,8 +279,11 @@ public class MSButton
           stroke(0);
         }
         if(gameOver == true){
-     displayLosingMessage();
-   }
+          displayLosingMessage();
+          displayLose = true;
+        }else{
+          displayLose = false;
+        }
         
         
     }
@@ -353,32 +357,32 @@ public void draw ()
      rect(width - 50, height - 100, 50, 50);
    }
 }
+//public void mousePressed(){
+//  if(gameOver == true){// && canReset == true){
+//    //width/2 - 25, height/2 + 27.5, 150, 30
+//    if(canReset == true && mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+//      restartThis();
+//      gameOver = false;
+//      restartGame = false;
+//      firstClick = true;
+//      canReset = false;
+//    }else if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+//      canReset = true;
+//    }
+//  }
+//  println(canReset);
+//}
 public void mousePressed(){
-  if(gameOver == true && canReset == true){
+  if(gameOver == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
     if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
       restartThis();
       gameOver = false;
       restartGame = false;
       firstClick = true;
-      canReset = false;
     }
   }
-  if(gameOver == true && canReset == false){
-    canReset = true;
-  }
 }
-//public void mousePressed(){
-//  if(gameOver == true){
-//    //width/2 - 25, height/2 + 27.5, 150, 30
-//    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
-//      restart();
-//      gameOver = false;
-//      restartGame = false;
-//      firstClick = true;
-//    }
-//  }
-//}
 public void restartThis(){
       for(int r = 0; r < buttons.length; r++){
         for(int c = 0; c < buttons[0].length; c++){
