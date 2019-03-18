@@ -76,7 +76,18 @@ public void setBombs()
   //
   //////////////////////////////////////////
 }
-
+public void mousePressed(){
+  if(gameOver == true){
+    //width/2 - 25, height/2 + 27.5, 150, 30
+    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+      gameOver = false;
+      restartGame = false;
+      firstClick = true;
+      rightClick = false;
+      restartThis();
+    }
+  }
+}
 
 public void keyPressed(){
       if(key == TAB){
@@ -166,7 +177,7 @@ public class MSButton
     }
     public void mousePressed () 
     {
-        if(firstClick == true && mouseButton != RIGHT){
+        if(firstClick == true && mouseButton == LEFT){
           for(int row = r-1; row < r+2; row++){
             for(int col = c-1; col < c+2; col++){
               aroundClick.add(buttons[row][col]);
@@ -336,6 +347,7 @@ public void draw ()
       resetThis = false;
       gameOver = false;
       restartGame = false;
+      rightClick = false;
       firstClick = true;
     }
     timer++;
@@ -386,17 +398,7 @@ public void draw ()
 //  }
 //  println(canReset);
 //}
-public void mousePressed(){
-  if(gameOver == true){
-    //width/2 - 25, height/2 + 27.5, 150, 30
-    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
-      gameOver = false;
-      restartGame = false;
-      firstClick = true;
-      restartThis();
-    }
-  }
-}
+
 public void restartThis(){
       for(int r = 0; r < buttons.length; r++){
         for(int c = 0; c < buttons[0].length; c++){
