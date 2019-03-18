@@ -178,7 +178,7 @@ public class MSButton
                }
              }
              gameOver = true;
-        }else if(displayLose == false){ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
+        }else{ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
           clicked = true;
           count = 0;
           if(isValid(r,c) == true && countBombs(r, c) > 0 && bombs.contains(this) == false){
