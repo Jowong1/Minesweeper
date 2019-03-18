@@ -1,3 +1,4 @@
+
 import de.bezier.guido.*;
 int MAP_SIZEX = 700;
 int MAP_SIZEY = 700;
@@ -34,6 +35,7 @@ lose message
 -flag mode on/off
 -special ability
 */
+
 void setup ()
 {
     background(0);
@@ -51,25 +53,25 @@ void setup ()
     }
     cursor(CROSS);
 }
-
-public void mousePressed(){
-  if(gameOver == true){
-    //width/2 - 25, height/2 + 27.5, 150, 30
-    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
-      restartThis();
-      gameOver = false;
-      restartGame = false;
-      firstClick = true;
-      rightClick = false;
-    }
-  }
-}
+///THIS
+//public void mousePressed(){
+//  if(gameOver == true){
+//    //width/2 - 25, height/2 + 27.5, 150, 30
+//    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+//      restartThis();
+//      gameOver = false;
+//      restartGame = false;
+//      firstClick = true;
+//      rightClick = false;
+//    }
+//  }
+//}
 
 public void keyPressed(){
-      if(key == TAB){
+      if(key == 'q' || key == 'Q'){
         rightClick = !rightClick;
       }
-      if(key == 'q' || key == 'Q'){
+      if(key == 't' || key == 'T'){
         highlight = !highlight;
       }
     if(key == 'r' || key == 'R'){
@@ -384,21 +386,20 @@ public void draw ()
      rect(width - 50, height - 100, 50, 50);
    }
 }
-//public void mousePressed(){
-//  if(gameOver == true){// && canReset == true){
-//    //width/2 - 25, height/2 + 27.5, 150, 30
-//    if(canReset == true && mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
-//      restartThis();
-//      gameOver = false;
-//      restartGame = false;
-//      firstClick = true;
-//      canReset = false;
-//    }else if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
-//      canReset = true;
-//    }
-//  }
-//  println(canReset);
-//}
+public void mousePressed(){
+  if(gameOver == true){// && canReset == true){
+    //width/2 - 25, height/2 + 27.5, 150, 30
+    if(canReset == true && mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+      restartThis();
+      gameOver = false;
+      restartGame = false;
+      firstClick = true;
+      canReset = false;
+    }else if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+      canReset = true;
+    }
+  }
+}
 
 public void restartThis(){
       for(int r = 0; r < buttons.length; r++){
