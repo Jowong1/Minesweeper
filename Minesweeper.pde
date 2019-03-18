@@ -353,19 +353,30 @@ public void draw ()
      rect(width - 50, height - 100, 50, 50);
    }
 }
+//public void mousePressed(){
+//  if(gameOver == true && canReset == true){
+//    //width/2 - 25, height/2 + 27.5, 150, 30
+//    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+//      restart();
+//      gameOver = false;
+//      restartGame = false;
+//      firstClick = true;
+//      canReset = false;
+//    }
+//  }
+//  if(gameOver == true && canReset == false){
+//    canReset = true;
+//  }
+//}
 public void mousePressed(){
-  if(gameOver == true && canReset == true){
+  if(gameOver == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
     if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
       restart();
       gameOver = false;
       restartGame = false;
       firstClick = true;
-      canReset = false;
     }
-  }
-  if(gameOver == true && canReset == false){
-    canReset = true;
   }
 }
 public void restart(){
