@@ -51,31 +51,7 @@ void setup ()
     }
     cursor(CROSS);
 }
-public void setBombs()
-{
-  // For a random number of bombs on the map
-  /*
-  int rRow = (int)(Math.random()*NUM_ROWS);
-  int rCol = (int)(Math.random()*NUM_COLS);
-  if(!bombs.contains(buttons[rRow][rCol])){
-    bombs.add(buttons[rRow][rCol]);
-  }
-  */
-  //////////////////////////////////////////
-  
-  // For a set number of bombs on the map
-  //
-  int rRow = (int)(Math.random()*NUM_ROWS);
-  int rCol = (int)(Math.random()*NUM_COLS);
-  while(bombs.contains(buttons[rRow][rCol]) == true || aroundClick.contains(buttons[rRow][rCol]) == true){
-    rRow = (int)(Math.random()*NUM_ROWS);
-    rCol = (int)(Math.random()*NUM_COLS);
-  }
-  bombs.add(buttons[rRow][rCol]);
 
-  //
-  //////////////////////////////////////////
-}
 public void mousePressed(){
   if(gameOver == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
@@ -159,7 +135,31 @@ public class MSButton
         clicked = true;
         return clicked;
     }
-    
+    public void setBombs()
+{
+  // For a random number of bombs on the map
+  /*
+  int rRow = (int)(Math.random()*NUM_ROWS);
+  int rCol = (int)(Math.random()*NUM_COLS);
+  if(!bombs.contains(buttons[rRow][rCol])){
+    bombs.add(buttons[rRow][rCol]);
+  }
+  */
+  //////////////////////////////////////////
+  
+  // For a set number of bombs on the map
+  //
+  int rRow = (int)(Math.random()*NUM_ROWS);
+  int rCol = (int)(Math.random()*NUM_COLS);
+  while(bombs.contains(buttons[rRow][rCol]) == true || aroundClick.contains(buttons[rRow][rCol]) == true){
+    rRow = (int)(Math.random()*NUM_ROWS);
+    rCol = (int)(Math.random()*NUM_COLS);
+  }
+  bombs.add(buttons[rRow][rCol]);
+
+  //
+  //////////////////////////////////////////
+}
     public boolean noneClicked(){
       int clickedNum = 0;
       for(int r = 0; r < buttons.length; r++){
@@ -414,7 +414,7 @@ public void restartThis(){
           }
         }
       }
-      // WHY IS THIS AN ERROR?? THE COMMENTED FOR LOOPS DON'T REMOVE EVERYTHING IN THE ARRAYLIST!!!
+      // WHY IS THIS AN ERROR?? THE COMMENTED 'FOR LOOPS' DON'T REMOVE EVERYTHING IN THE ARRAYLIST!!!
       //for(int i = 0; i < bombs.size(); i++){
       //  bombs.remove(i);
       //}
