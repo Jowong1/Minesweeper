@@ -13,21 +13,29 @@ boolean rightClick = false;
 boolean highlight = false;
 boolean reset = false;
 boolean gameOver = false;
+boolean restartGame = false;
+boolean canReset = false;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 private ArrayList <MSButton> aroundClick;
 
 /*
+homescreen?? MINESWEEPER(THEN BOMB) click each box
 Reset map
 special ability
 settings???
-bombs
-change marked if gameover
 win message
 lose message
+
+>TAB BAR<
+-reset
+-highlight on/off
+-flag mode on/off
+-special ability
 */
 void setup ()
 {
+    background(0);
     size(750, 700); // I have a map size variable too, so this "screen size" has to be constant
     textAlign(CENTER,CENTER);
     // make the manager
@@ -40,6 +48,7 @@ void setup ()
         buttons[r][c] = new MSButton(r,c);
       }
     }
+    cursor(CROSS);
 }
 public void setBombs()
 {
@@ -67,23 +76,7 @@ public void setBombs()
   //////////////////////////////////////////
 }
 
-public void draw ()
-{
-    timer++;
-    background( 0 );
-    if(isWon()){
-        displayWinningMessage();
-    }
-    if(timer < 130){
-        move = 0;
-      }else if(timer >= 130 && timer < 135){
-        move = move - 2;
-      }else if(timer >= 135 && timer < 140){
-        move = move + 2;
-      }else if(timer >= 140){
-        timer = 0;
-      }
-}
+
 public void keyPressed(){
       if(key == TAB){
         rightClick = !rightClick;
@@ -102,7 +95,18 @@ public boolean isWon()
 }
 public void displayLosingMessage()
 {
-    //println("You lost lol");
+  rectMode(CENTER);
+  fill(255);
+  rect(width/2 - 25, height/2, 300, 100);
+  rect(width/2 - 25, height/2 + 27.5, 150, 30);
+  fill(0);
+  textSize(50);
+  text("Oh no!", width/2 - 25, height/2 - 20);
+  textSize(20);
+
+  text("Retry?", width/2 - 25, height/2 + 25);
+  textSize(12);
+  rectMode(CORNER);
 }
 public void displayWinningMessage()
 {
@@ -144,6 +148,7 @@ public class MSButton
         return clicked;
     }
     
+    
     public void mousePressed () 
     {
         if(firstClick == true && mouseButton != RIGHT){
@@ -152,7 +157,7 @@ public class MSButton
               aroundClick.add(buttons[row][col]);
             }
           }
-          for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs
+          for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs (int)((NUM_ROWS*NUM_COLS)*0.2)
             setBombs();
           }
           firstClick = false;
@@ -172,7 +177,6 @@ public class MSButton
                }
              }
              gameOver = true;
-             displayLosingMessage();
         }else{ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
           clicked = true;
           count = 0;
@@ -193,7 +197,6 @@ public class MSButton
 
     public void draw () 
     {    
-        
         count++;
         if(gameOver == true && clicked && bombs.contains(this) ) {
              fill(255,0,0);
@@ -222,7 +225,6 @@ public class MSButton
         */
         rect(x, y, width, height);
         if(gameOver == true && clicked && bombs.contains(this) && marked == false){
-          int myRad;
              //for(int i = 0; i < width; i+=10){
              //  ellipse(x + i, y, 10,10);
              //}
@@ -275,11 +277,11 @@ public class MSButton
           strokeWeight(1);
           stroke(0);
         }
+        if(gameOver == true){
+     displayLosingMessage();
+   }
         
-    }
-    public void move(){
-//      timer++;
-      
+        
     }
     public void setLabel(String newLabel)
     {
@@ -308,4 +310,86 @@ public class MSButton
       }
       return numBombs;
     }
+}
+public void draw ()
+{
+    if(reset == true){
+      restart();
+      reset = false;
+      gameOver = false;
+      restartGame = false;
+      firstClick = true;
+      canReset = false;
+    }
+    timer++;
+    if(isWon()){
+        displayWinningMessage();
+    }
+    if(timer < 130){
+        move = 0;
+      }else if(timer >= 130 && timer < 135){
+        move = move - 2;
+      }else if(timer >= 135 && timer < 140){
+        move = move + 2;
+      }else if(timer >= 140){
+        timer = 0;
+      }
+   //FLAG MODE
+   if(rightClick == true){
+     fill(255);
+     rect(width - 50, height - 50, 50, 50);
+     fill(0);
+     text("FLAG\nMODE", width - 25, height - 25);
+   }else{
+     fill(0);
+     rect(width - 50, height - 50, 50, 50);
+   }
+   if(highlight == true){
+     fill(255);
+     rect(width - 50, height - 100, 50, 50);
+     fill(0);
+     text("ASSIST\nMODE", width - 25, height - 75);
+   }else{
+     fill(0);
+     rect(width - 50, height - 100, 50, 50);
+   }
+}
+public void mousePressed(){
+  if(gameOver == true && canReset == true){
+    //width/2 - 25, height/2 + 27.5, 150, 30
+    if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
+      restart();
+      gameOver = false;
+      restartGame = false;
+      firstClick = true;
+      canReset = false;
+    }
+  }
+  if(gameOver == true && canReset == false){
+    canReset = true;
+  }
+}
+public void restart(){
+      for(int r = 0; r < buttons.length; r++){
+        for(int c = 0; c < buttons[0].length; c++){
+          if(buttons[r][c].isMarked() == true){
+            buttons[r][c].marked = false;
+          }
+          if(buttons[r][c].isClicked() == true){
+            buttons[r][c].clicked = false;
+          }
+          if(buttons[r][c].label != ""){
+            buttons[r][c].label = "";
+          }
+        }
+      }
+      // WHY IS THIS AN ERROR?? THE COMMENTED FOR LOOPS DON'T REMOVE EVERYTHING IN THE ARRAYLIST!!!
+      //for(int i = 0; i < bombs.size(); i++){
+      //  bombs.remove(i);
+      //}
+      //for(int i = 0; i < aroundClick.size(); i++){
+      //  aroundClick.remove(i);
+      //}
+      bombs.clear();
+      aroundClick.clear();
 }
