@@ -319,7 +319,6 @@ public void draw ()
       gameOver = false;
       restartGame = false;
       firstClick = true;
-      canReset = false;
     }
     timer++;
     if(isWon()){
