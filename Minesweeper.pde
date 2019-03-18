@@ -149,7 +149,21 @@ public class MSButton
         return clicked;
     }
     
-    
+    public boolean noneClicked(){
+      int clickedNum = 0;
+      for(int r = 0; r < buttons.length; r++){
+        for(int c = 0; c < buttons[0].length; c++){
+          if(buttons[r][c].isClicked()){
+            clickedNum++;
+          }
+        }
+      }
+      if(clickedNum == 0){
+        return true;
+      }else{
+        return false;
+      }
+    }
     public void mousePressed () 
     {
         if(firstClick == true && mouseButton != RIGHT){
@@ -178,7 +192,7 @@ public class MSButton
                }
              }
              gameOver = true;
-        }else{ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
+        }else if(displayLose == false){ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
           clicked = true;
           count = 0;
           if(isValid(r,c) == true && countBombs(r, c) > 0 && bombs.contains(this) == false){
@@ -376,10 +390,10 @@ public void mousePressed(){
   if(gameOver == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
     if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
-      restartThis();
       gameOver = false;
       restartGame = false;
       firstClick = true;
+      restartThis();
     }
   }
 }
