@@ -17,6 +17,8 @@ boolean gameOver = false;
 boolean restartGame = false;
 boolean canReset = false;
 boolean displayLose = true;
+boolean displaySettingsBoolean = false;
+boolean canPlay = true;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 private ArrayList <MSButton> aroundClick;
@@ -102,7 +104,24 @@ public void displayWinningMessage()
 {
     //your code here
 }
-
+public void displaySettingsButton()
+{
+    //SETTINGS BUTTON
+    fill(255);
+    rect(width - 50, 0, 50, 50);
+}
+public void displaySettings()
+{
+    //SETTINGS
+    fill(0);
+    rectMode(CENTER);
+    rect(width/2 - 25, height/2, 400, 500);
+    rectMode(CORNER);
+    fill(255);
+    textSize(30);
+    text("Settings", width/2 - 25, 140);
+    textSize(12);
+}
 public class MSButton
 {
     private int r, c;
@@ -179,43 +198,45 @@ public class MSButton
     }
     public void mousePressed () 
     {
-      if(gameOver == false){
-        if(firstClick == true && mouseButton == LEFT){
-          for(int row = r-1; row < r+2; row++){
-            for(int col = c-1; col < c+2; col++){
-              aroundClick.add(buttons[row][col]);
+      if(canPlay == true){
+        if(gameOver == false){
+          if(firstClick == true && mouseButton == LEFT){
+            for(int row = r-1; row < r+2; row++){
+              for(int col = c-1; col < c+2; col++){
+                aroundClick.add(buttons[row][col]);
+              }
             }
+            for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs (int)((NUM_ROWS*NUM_COLS)*0.2)
+              setBombs();
+            }
+            firstClick = false;
           }
-          for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs (int)((NUM_ROWS*NUM_COLS)*0.2)
-            setBombs();
-          }
-          firstClick = false;
-        }
-        if(mouseButton == RIGHT || rightClick == true){
-          marked = !marked;
-          if(marked == false){
-            clicked = false;
-          }
-          // Fail safe
-        }else if(bombs.contains(this) && firstClick == false){
-             for(int r = 0; r < buttons.length; r++){
-               for(int c = 0; c < buttons[0].length; c++){
-                 if(bombs.contains(buttons[r][c])){
-                   buttons[r][c].setClicked();
+          if(mouseButton == RIGHT || rightClick == true){
+            marked = !marked;
+            if(marked == false){
+              clicked = false;
+            }
+            // Fail safe
+          }else if(bombs.contains(this) && firstClick == false){
+               for(int r = 0; r < buttons.length; r++){
+                 for(int c = 0; c < buttons[0].length; c++){
+                   if(bombs.contains(buttons[r][c])){
+                     buttons[r][c].setClicked();
+                   }
                  }
                }
-             }
-             gameOver = true;
-        }else if(displayLose == false){ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
-          clicked = true;
-          count = 0;
-          if(isValid(r,c) == true && countBombs(r, c) > 0 && bombs.contains(this) == false){
-            setLabel("" + countBombs(r, c));
-          }else{ // count > 1000
-            for(int rI = r - 1; rI < r + 2; rI++){
-              for(int cI = c - 1; cI < c + 2; cI++){
-                if(isValid(rI,cI) == true && bombs.contains(this) == false && buttons[rI][cI].isClicked() == false){
-                  buttons[rI][cI].mousePressed();
+               gameOver = true;
+          }else if(displayLose == false){ // Fixes bug of clicking 2 squares at once - makes sure there is > 1000 frames between clicks
+            clicked = true;
+            count = 0;
+            if(isValid(r,c) == true && countBombs(r, c) > 0 && bombs.contains(this) == false){
+              setLabel("" + countBombs(r, c));
+            }else{ // count > 1000
+              for(int rI = r - 1; rI < r + 2; rI++){
+                for(int cI = c - 1; cI < c + 2; cI++){
+                  if(isValid(rI,cI) == true && bombs.contains(this) == false && buttons[rI][cI].isClicked() == false){
+                    buttons[rI][cI].mousePressed();
+                  }
                 }
               }
             }
@@ -227,6 +248,7 @@ public class MSButton
     public void draw () 
     {    
         count++;
+        displaySettingsButton();
         if(gameOver == true && clicked && bombs.contains(this) ) {
              fill(255,0,0);
         }else if(clicked){
@@ -312,8 +334,9 @@ public class MSButton
         }else{
           displayLose = false;
         }
-        
-        
+        if(displaySettingsBoolean == true){
+          displaySettings();
+        }
     }
     public void setLabel(String newLabel)
     {
@@ -366,6 +389,7 @@ public void draw ()
       }else if(timer >= 140){
         timer = 0;
       }
+   
    //FLAG MODE
    if(rightClick == true){
      fill(255);
@@ -376,6 +400,7 @@ public void draw ()
      fill(0);
      rect(width - 50, height - 50, 50, 50);
    }
+   //HIGHLIGHT MODE
    if(highlight == true){
      fill(255);
      rect(width - 50, height - 100, 50, 50);
@@ -387,6 +412,12 @@ public void draw ()
    }
 }
 public void mousePressed(){
+  if(mouseX > width - 50 && mouseX <  width && mouseY > 0 && mouseY < 50){
+    displaySettingsBoolean = true;
+    canPlay = false;
+  }
+  //if(mouse
+  rect(width/2 - 25, height/2, 400, 500);
   if(gameOver == true){// && canReset == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
     if(canReset == true && mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
