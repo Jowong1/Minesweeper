@@ -19,6 +19,7 @@ boolean canReset = false;
 boolean displayLose = true;
 boolean displaySettingsBoolean = false;
 boolean canPlay = true;
+boolean pressingClose = false;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 private ArrayList <MSButton> aroundClick;
@@ -79,6 +80,10 @@ public void keyPressed(){
     if(key == 'r' || key == 'R'){
       resetThis = true;
     }
+    if(key == 'b' || key == 'B'){
+      screenBrightness();
+    }
+    
 }
 public boolean isWon()
 {
@@ -121,6 +126,37 @@ public void displaySettings()
     textSize(30);
     text("Settings", width/2 - 25, 140);
     textSize(12);
+    settingsButtons();
+    if(displaySettingsBoolean == true){
+      highlight = false;
+    }
+}
+public void settingsButtons(){
+  //CLOSE SETTINGS
+  rectMode(CENTER);
+  if(pressingClose == true){
+    fill(100);
+  }else{
+    fill(255);
+  }
+  rect(width/2 + 150, height/2 - 225, 30, 30);
+  fill(0);
+  line(width/2 + 150 - 15, height/2 - 225 - 15, width/2 + 150 + 15, height/2 - 225 + 15);
+  line(width/2 + 150 - 15, height/2 - 225 + 15, width/2 + 150 + 15, height/2 - 225 - 15);
+  rectMode(CORNER);
+  for(int r = 0; r < 181; r+=60){
+    for(int c = 0; c < 181; c+=180){
+      fill(255);
+      rect(width/2 - 190 + c, 180 + r, 20, 20);
+    }
+  }
+}
+public void screenBrightness(){
+  fill(0, 0, 0 , 200);
+  rectMode(CENTER);
+  rect(0,0,width,height);
+  println(true);
+  rectMode(CORNER);
 }
 public class MSButton
 {
@@ -249,6 +285,7 @@ public class MSButton
     {    
         count++;
         displaySettingsButton();
+        
         if(gameOver == true && clicked && bombs.contains(this) ) {
              fill(255,0,0);
         }else if(clicked){
@@ -337,6 +374,7 @@ public class MSButton
         if(displaySettingsBoolean == true){
           displaySettings();
         }
+        screenBrightness();
     }
     public void setLabel(String newLabel)
     {
@@ -410,13 +448,17 @@ public void draw ()
      fill(0);
      rect(width - 50, height - 100, 50, 50);
    }
+   
 }
 public void mousePressed(){
+  //SETTINGS
   if(mouseX > width - 50 && mouseX <  width && mouseY > 0 && mouseY < 50){
     displaySettingsBoolean = true;
     canPlay = false;
   }
-  //if(mouse
+  if(displaySettingsBoolean == true && mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
+    pressingClose = true;
+  }
   rect(width/2 - 25, height/2, 400, 500);
   if(gameOver == true){// && canReset == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
@@ -429,6 +471,14 @@ public void mousePressed(){
     }else if(mouseX > width/2 - 25 - 75 && mouseX < width/2 - 25 + 75 && mouseY > height/2 + 27.5 - 15 && mouseY < height/2 + 27.5 + 15){
       canReset = true;
     }
+  }
+  
+}
+public void mouseReleased(){
+  if(pressingClose == true && mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
+    displaySettingsBoolean = false;
+    pressingClose = false;
+    canPlay = true;
   }
 }
 
