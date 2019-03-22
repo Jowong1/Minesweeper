@@ -7,6 +7,7 @@ int NUM_COLS = 20;
 int count = 0;
 int change = 1;
 int timer = 0;
+int brightness = 0; //0 bright, 255 dark
 float move = 0;
 boolean firstClick = true;
 color HIGHLIGHT_COLOR = color(255, 236, 33);
@@ -81,7 +82,7 @@ public void keyPressed(){
       resetThis = true;
     }
     if(key == 'b' || key == 'B'){
-      screenBrightness();
+      brightness+=10;
     }
     
 }
@@ -132,6 +133,13 @@ public void displaySettings()
     }
 }
 public void settingsButtons(){
+  /*
+  -brightness
+  -cursor(cross,normal,pickaxe)
+  -close settings
+  -powerups
+  -instructions
+  */
   //CLOSE SETTINGS
   rectMode(CENTER);
   if(pressingClose == true){
@@ -150,13 +158,21 @@ public void settingsButtons(){
       rect(width/2 - 190 + c, 180 + r, 20, 20);
     }
   }
+  //BUTTON (ON) DISPLAY
+  fill(0);
+  rect(width/2 - 187, 183, 14, 14);
+  fill(255);
+  rect(width/2 - 186, 184, 12, 12);
 }
 public void screenBrightness(){
-  fill(0, 0, 0 , 200);
-  rectMode(CENTER);
-  rect(0,0,width,height);
-  println(true);
+  fill(0, brightness);
   rectMode(CORNER);
+  rect(width - 50, 0, 50 + 2, height + 2);
+  if(displaySettingsBoolean == true){
+    rectMode(CENTER);
+    rect(width/2 - 25, height/2, 400, 500);
+    rectMode(CORNER);
+  }
 }
 public class MSButton
 {
@@ -312,6 +328,8 @@ public class MSButton
         }
         */
         rect(x, y, width, height);
+        fill(0, brightness);
+        rect(x, y, width, height);
         if(gameOver == true && clicked && bombs.contains(this) && marked == false){
              //for(int i = 0; i < width; i+=10){
              //  ellipse(x + i, y, 10,10);
@@ -333,20 +351,20 @@ public class MSButton
         }
         
         if(highlight){
-        fill(HIGHLIGHT_COLOR);
-        noStroke();
-        if(mouseX > x + width && mouseX < x + width*2 && mouseY > y - height && mouseY < y + height*2 ){
-          rect(x+1,y+1, width/14, height);
-        }
-        if(mouseX < x && mouseX > x - width && mouseY > y - height && mouseY < y + height*2 ){
-          rect(x + width - (width/14) - 1,y+1, width/10, height);
-        }
-        if(mouseY > y + height && mouseY < y + height*2 && mouseX > x - width && mouseX < x + width*2 ){
-          rect(x+1,y+1, width, height/14);
-        }
-        if(mouseY < y && mouseY > y - height && mouseX > x - width && mouseX < x + width*2 ){
-          rect(x+1,y + height - (height/14) - 1, width, height/10);
-        }
+          fill(HIGHLIGHT_COLOR);
+          noStroke();
+          if(mouseX > x + width && mouseX < x + width*2 && mouseY > y - height && mouseY < y + height*2 ){
+            rect(x+1,y+1, width/14, height);
+          }
+          if(mouseX < x && mouseX > x - width && mouseY > y - height && mouseY < y + height*2 ){
+            rect(x + width - (width/14) - 1,y+1, width/10, height);
+          }
+          if(mouseY > y + height && mouseY < y + height*2 && mouseX > x - width && mouseX < x + width*2 ){
+            rect(x+1,y+1, width, height/14);
+          }
+          if(mouseY < y && mouseY > y - height && mouseX > x - width && mouseX < x + width*2 ){
+            rect(x+1,y + height - (height/14) - 1, width, height/10);
+          }
         }
         stroke(0);
         fill(0);
@@ -448,7 +466,6 @@ public void draw ()
      fill(0);
      rect(width - 50, height - 100, 50, 50);
    }
-   
 }
 public void mousePressed(){
   //SETTINGS
