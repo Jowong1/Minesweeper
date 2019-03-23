@@ -8,6 +8,8 @@ int count = 0;
 int change = 1;
 int timer = 0;
 int brightness = 0; //0 bright, 255 dark
+int shiftX = 0;
+int shiftY = 0;
 float move = 0;
 float spin = 0;
 boolean firstClick = true;
@@ -22,6 +24,15 @@ boolean displayLose = true;
 boolean displaySettingsBoolean = false;
 boolean canPlay = true;
 boolean pressingClose = false;
+boolean bOne = false;
+boolean bTwo = false;
+boolean bEasy = false;
+boolean bMedium = true;
+boolean bHard = false;
+boolean bArrow = false;
+boolean bPickaxe = false;
+boolean bCross = true;
+float percentBombs = 0.2;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
 private ArrayList <MSButton> aroundClick;
@@ -35,16 +46,16 @@ win message
 lose message
 
 >TAB BAR<
--reset
--highlight on/off
--flag mode on/off
--special ability
+-Xreset
+-Vhighlight on/off
+-Vflag mode on/off
+--special ability
+-instructions
 */
 
 void setup ()
 {
     background(0);
-    frameRate(40);
     size(750, 700); // I have a map size variable too, so this "screen size" has to be constant
     textAlign(CENTER,CENTER);
     // make the manager
@@ -57,7 +68,6 @@ void setup ()
         buttons[r][c] = new MSButton(r,c);
       }
     }
-    cursor(CROSS);
 }
 ///THIS
 //public void mousePressed(){
@@ -74,18 +84,28 @@ void setup ()
 //}
 
 public void keyPressed(){
-      if(key == 'q' || key == 'Q'){
-        rightClick = !rightClick;
-      }
-      if(key == 't' || key == 'T'){
-        highlight = !highlight;
-      }
+    if(key == 'q' || key == 'Q'){
+      rightClick = !rightClick;
+    }
+    if(key == 't' || key == 'T'){
+      highlight = !highlight;
+    }
     if(key == 'r' || key == 'R'){
-      resetThis = true;
+    resetThis = true;
     }
-    if(key == 'b' || key == 'B'){
-      brightness+=10;
+    if(key == 'b' || key == 'B' && brightness < 255){
+    brightness+=10;
     }
+    if(key == '1'){
+      percentBombs = 0.1;
+    }
+    if(key == '2'){
+      percentBombs = 0.2;
+    }
+    if(key == '3'){
+      percentBombs = 0.3;
+    }
+    
     
 }
 public boolean isWon()
@@ -152,7 +172,7 @@ public void displaySettingsButton()
     popMatrix();
 }
 public void displaySettings()
-{
+{   
     //SETTINGS
     fill(0);
     rectMode(CENTER);
@@ -173,6 +193,7 @@ public void settingsButtons(){
   -cursor(cross,normal,pickaxe)
   -close settings
   -powerups
+  -difficulty
   -instructions
   */
   //CLOSE SETTINGS
@@ -187,17 +208,73 @@ public void settingsButtons(){
   line(width/2 + 150 - 15, height/2 - 225 - 15, width/2 + 150 + 15, height/2 - 225 + 15);
   line(width/2 + 150 - 15, height/2 - 225 + 15, width/2 + 150 + 15, height/2 - 225 - 15);
   rectMode(CORNER);
-  for(int r = 0; r < 181; r+=60){
-    for(int c = 0; c < 181; c+=180){
+  /*
+  for(int r = 0; r < 181; r+=60){ // 181
+    for(int c = 0; c < 181; c+=180){ // 181
       fill(255);
       rect(width/2 - 190 + c, 180 + r, 20, 20);
+      fill(0);
+      rect(width/2 - 187 + c, 183 + r, 14, 14);
     }
   }
   //BUTTON (ON) DISPLAY
-  fill(0);
-  rect(width/2 - 187, 183, 14, 14);
+  
+  if(bOne == true){
+    fill(255);
+    rect(width/2 - 186, 184, 12, 12);
+  }
+  if(bTwo == true){
+    fill(255);
+    rect(width/2 - 186 + 180, 184, 12, 12);
+  }
+  */
+  // DIFFICULTY
+  shiftX = 55;
+  shiftY = 80;
+  for(int r = shiftY; r < 101 + shiftY; r+=100){ // 181
+    for(int c = shiftX; c < 201 + shiftX; c+=100){ // 181
+      fill(255);
+      rect(width/2 - 190 + c, 180 + r, 20, 20);
+      fill(0);
+      rect(width/2 - 187 + c, 183 + r, 14, 14);
+    }
+  }
+  if(bEasy == true){
+    fill(255);
+    rect(width/2 - 186 + shiftX, 184 + shiftY, 12, 12);
+  }
+  if(bMedium == true){
+    fill(255);
+    rect(width/2 - 186 + 100 + shiftX, 184 + shiftY, 12, 12);
+  }
+  if(bHard == true){
+    fill(255);
+    rect(width/2 - 186 + 200 + shiftX, 184 + shiftY, 12, 12);
+  }
+  if(bArrow == true){
+    fill(255);
+    rect(width/2 - 186 + shiftX, 184 + 100 + shiftY, 12, 12);
+  }
+  if(bPickaxe == true){
+    fill(255);
+    rect(width/2 - 186 + 100 + shiftX, 184 + 100 + shiftY, 12, 12);
+  }
+  if(bCross == true){
+    fill(255);
+    rect(width/2 - 186 + 200 + shiftX, 184 + 100 + shiftY, 12, 12);
+  }
   fill(255);
-  rect(width/2 - 186, 184, 12, 12);
+  textSize(25);
+  text("Difficulty", width/2 - 80 + shiftX, 134 + shiftY);
+  text("Cursor", width/2 - 80 + shiftX, 234 + shiftY);
+  textSize(18);
+  text("Easy", width/2 - 180 + shiftX, 164 + shiftY);
+  text("Medium", width/2 - 80 + shiftX, 164 + shiftY);
+  text("Hard", width/2 + 20 + shiftX, 164 + shiftY);
+  text("Arrow", width/2 - 180 + shiftX, 264 + shiftY);
+  text("Pickaxe", width/2 - 80 + shiftX, 264 + shiftY);
+  text("Cross", width/2 + 20 + shiftX, 264 + shiftY);
+  textSize(12);
 }
 public void screenBrightness(){
   fill(0, brightness);
@@ -293,7 +370,7 @@ public class MSButton
                 aroundClick.add(buttons[row][col]);
               }
             }
-            for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*0.2); i++){ // Change % of bombs (int)((NUM_ROWS*NUM_COLS)*0.2)
+            for(int i = 0; i < (int)((NUM_ROWS*NUM_COLS)*percentBombs); i++){ // Change % of bombs (int)((NUM_ROWS*NUM_COLS)*0.2)
               setBombs();
             }
             firstClick = false;
@@ -459,6 +536,14 @@ public class MSButton
 }
 public void draw ()
 {
+  if(bCross == true){
+    cursor(CROSS);
+  }else if(bPickaxe == true){
+    //cursor(img);
+  }else if(bArrow == true){
+    cursor(ARROW);
+  }
+  if(canPlay == true){
     if(resetThis == true){
       restartThis();
       resetThis = false;
@@ -501,6 +586,7 @@ public void draw ()
      fill(0);
      rect(width - 50, height - 100, 50, 50);
    }
+  }
 }
 public void mousePressed(){
   //SETTINGS
@@ -508,8 +594,62 @@ public void mousePressed(){
     displaySettingsBoolean = true;
     canPlay = false;
   }
-  if(displaySettingsBoolean == true && mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
-    pressingClose = true;
+  if(displaySettingsBoolean == true){
+    if(mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
+      pressingClose = true;
+    }
+    // bOne on/off
+    if(mouseX > (width/2 - 190) && mouseY > (180) && mouseX < (width/2 - 170) && mouseY < (200)){
+      bOne = !bOne;
+    }
+    // bTwo on/off
+    if(mouseX > (width/2 - 190 + 180) && mouseY > (180) && mouseX < (width/2 - 170 + 180) && mouseY < (200)){
+      bTwo = !bTwo;
+    }
+    //Difficulty
+      //Easy
+    if(mouseX > (width/2 - 190 + shiftX) && mouseY > (180 + shiftY) && mouseX < (width/2 - 190 + 20 + shiftX) && mouseY < (180 + 20 + shiftY)){
+      percentBombs = 0.1;
+      bEasy = true;
+      bMedium = false;
+      bHard = false;
+      resetThis = true;
+    }
+      //Medium
+    if(mouseX > (width/2 - 190 + 100 + shiftX) && mouseY > (180 + shiftY) && mouseX < (width/2 - 190 + 20 + 100 + shiftX) && mouseY < (180 + 20 + shiftY)){
+      percentBombs = 0.2;
+      bEasy = false;
+      bMedium = true;
+      bHard = false;
+      resetThis = true;
+    }
+      //Hard
+    if(mouseX > (width/2 - 190 + 200 + shiftX) && mouseY > (180 + shiftY) && mouseX < (width/2 - 190 + 20 + 200 + shiftX) && mouseY < (180 + 20 + shiftY)){
+      percentBombs = 0.3;
+      bEasy = false;
+      bMedium = false;
+      bHard = true;
+      resetThis = true;
+    }
+    
+    //Cursor
+    if(mouseX > (width/2 - 190 + shiftX) && mouseY > (280 + shiftY) && mouseX < (width/2 - 190 + 20 + shiftX) && mouseY < (280 + 20 + shiftY)){
+      bArrow = true;
+      bPickaxe = false;
+      bCross = false;
+    }
+      //Medium
+    if(mouseX > (width/2 - 190 + 100 + shiftX) && mouseY > (280 + shiftY) && mouseX < (width/2 - 190 + 20 + 100 + shiftX) && mouseY < (280 + 20 + shiftY)){
+      bArrow = false;
+      bPickaxe = true;
+      bCross = false;
+    }
+      //Hard
+    if(mouseX > (width/2 - 190 + 200 + shiftX) && mouseY > (280 + shiftY) && mouseX < (width/2 - 190 + 20 + 200 + shiftX) && mouseY < (280 + 20 + shiftY)){
+      bArrow = false;
+      bPickaxe = false;
+      bCross = true;
+    }
   }
   rect(width/2 - 25, height/2, 400, 500);
   if(gameOver == true){// && canReset == true){
@@ -524,7 +664,6 @@ public void mousePressed(){
       canReset = true;
     }
   }
-  
 }
 public void mouseReleased(){
   if(pressingClose == true && mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
