@@ -9,6 +9,7 @@ int change = 1;
 int timer = 0;
 int brightness = 0; //0 bright, 255 dark
 float move = 0;
+float spin = 0;
 boolean firstClick = true;
 color HIGHLIGHT_COLOR = color(255, 236, 33);
 boolean rightClick = false;
@@ -43,6 +44,7 @@ lose message
 void setup ()
 {
     background(0);
+    frameRate(40);
     size(750, 700); // I have a map size variable too, so this "screen size" has to be constant
     textAlign(CENTER,CENTER);
     // make the manager
@@ -114,7 +116,40 @@ public void displaySettingsButton()
 {
     //SETTINGS BUTTON
     fill(255);
-    rect(width - 50, 0, 50, 50);
+    rectMode(CENTER);
+    rect(width - 25, 25, 50, 50);
+    fill(0);
+    rect(width - 25, 25, 42, 42);
+    rectMode(CORNER);
+    fill(255);
+    ellipse(width - 25, 25, 20, 20);
+    fill(0);
+    ellipse(width - 25, 25, 10, 10);
+    pushMatrix();
+    noStroke();
+    translate(width - 25, 25);
+    rectMode(CENTER);
+    fill(255);
+    rotate(spin);
+    for(int i = 0; i < 6; i++){
+      rect(0, -10, 6, 6);
+      rotate(PI/3);
+    }
+    //rect(0, -10, 6, 6);
+    //rotate(PI/3);
+    //rect(0, -10, 6, 6);
+    //rotate(PI/3);
+    //rect(0, -10, 6, 6);
+    //rotate(PI/3);
+    //rect(0, -10, 6, 6);
+    //rotate(PI/3);
+    //rect(0, -10, 6, 6);
+    //rotate(PI/3);
+    //rect(0, -10, 6, 6);
+    spin = spin + 0.0001;
+    rectMode(CORNER);
+    stroke(0);
+    popMatrix();
 }
 public void displaySettings()
 {
