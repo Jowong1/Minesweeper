@@ -10,6 +10,8 @@ int timer = 0;
 int brightness = 0; //0 bright, 255 dark
 int shiftX = 0;
 int shiftY = 0;
+int drag = 0;
+int setX = 28 + 430 + shiftX;
 float move = 0;
 float spin = 0;
 boolean firstClick = true;
@@ -32,6 +34,7 @@ boolean bHard = false;
 boolean bArrow = false;
 boolean bPickaxe = false;
 boolean bCross = true;
+boolean isDrag = false;
 float percentBombs = 0.2;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
@@ -104,6 +107,9 @@ public void keyPressed(){
     }
     if(key == '3'){
       percentBombs = 0.3;
+    }
+    if(key == 'd' || key == 'D'){
+      drag-=10;
     }
     
     
@@ -263,6 +269,43 @@ public void settingsButtons(){
     fill(255);
     rect(width/2 - 186 + 200 + shiftX, 184 + 100 + shiftY, 12, 12);
   }
+  rectMode(CENTER);
+  rect(width/2 - 80 + shiftX, 400 + shiftY, 230, 14);
+  fill(0);
+  rect(width/2 - 80 + shiftX, 400 + shiftY, 224, 8);
+  //Brightness scroller
+  noStroke();
+  //stroke(255);
+  
+  fill(255);
+  //noFill();
+  // 514, 297 // 243, 458
+  if(isDrag == true){
+    //if(mouseX > 458 + shiftX){
+    //  setX = 459;
+    //}else if(mouseX < 243 + shiftX){
+    //  setX = 243;
+    //}else{
+    //  
+    //}
+    // -- > 243 - 458 
+    if(mouseX <= 458 - 55 + shiftX && mouseX >= 243 - 55 + shiftX){
+      setX = mouseX;
+    }else if(mouseX > 458 - 55 + shiftX){
+      setX = 458 - 55 + shiftX;
+    }else if(mouseX < 243 - 55 + shiftX){
+      setX = 243 - 55 + shiftX;
+    }
+    brightness = 458 - setX - 40;
+    // ^^^width/2 - 80 + shiftX is MIDDLE
+    //    width/2 + 28 + shiftX or + 30 is MAX/RIGHT
+    //    width/2 - 188 +  shiftX LOW/LEFT
+    // range is from +28 to -188 |OR| 216
+  }
+  println(setX);
+  rect(setX, 400 + shiftY, 10, 20);
+  stroke(0);
+  rectMode(CORNER);
   fill(255);
   textSize(25);
   text("Difficulty", width/2 - 80 + shiftX, 134 + shiftY);
@@ -671,8 +714,18 @@ public void mouseReleased(){
     pressingClose = false;
     canPlay = true;
   }
+  if(isDrag == true){
+    isDrag = false;
+  }
 }
-
+public void mouseDragged(){
+  //Brightness
+    //rect(setX + shiftX, 400 + shiftY, 10, 20); 
+    if(mouseX > setX - 6 && mouseY > 400 + shiftY - 11 && mouseX < setX + 6 && mouseY < 400 + shiftY + 11){
+      isDrag = true;
+    }
+    // 243, 459
+}
 public void restartThis(){
       for(int r = 0; r < buttons.length; r++){
         for(int c = 0; c < buttons[0].length; c++){
