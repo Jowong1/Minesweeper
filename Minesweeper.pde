@@ -8,10 +8,11 @@ int count = 0;
 int change = 1;
 int timer = 0;
 int brightness = 0; //0 bright, 255 dark
-int shiftX = 0;
-int shiftY = 0;
+int shiftX = 55;
+int shiftY = 80;
 int drag = 0;
-int setX = 28 + 430 + shiftX;
+int setX = 28 + 430 - 55 + shiftX;
+int countToTen = 0;
 float move = 0;
 float spin = 0;
 boolean firstClick = true;
@@ -24,6 +25,7 @@ boolean restartGame = false;
 boolean canReset = false;
 boolean displayLose = true;
 boolean displaySettingsBoolean = false;
+boolean displayInfoBoolean = false;
 boolean canPlay = true;
 boolean pressingClose = false;
 boolean bOne = false;
@@ -35,6 +37,8 @@ boolean bArrow = false;
 boolean bPickaxe = false;
 boolean bCross = true;
 boolean isDrag = false;
+boolean countTenB = false;
+boolean released = false;
 float percentBombs = 0.2;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> bombs; //ArrayList of just the minesweeper buttons that are mined
@@ -96,23 +100,6 @@ public void keyPressed(){
     if(key == 'r' || key == 'R'){
     resetThis = true;
     }
-    if(key == 'b' || key == 'B' && brightness < 255){
-    brightness+=10;
-    }
-    if(key == '1'){
-      percentBombs = 0.1;
-    }
-    if(key == '2'){
-      percentBombs = 0.2;
-    }
-    if(key == '3'){
-      percentBombs = 0.3;
-    }
-    if(key == 'd' || key == 'D'){
-      drag-=10;
-    }
-    
-    
 }
 public boolean isWon()
 {
@@ -125,6 +112,8 @@ public void displayLosingMessage()
   fill(255);
   rect(width/2 - 25, height/2, 300, 100);
   rect(width/2 - 25, height/2 + 27.5, 150, 30);
+  fill(0, brightness);
+  rect(width/2 - 25, height/2, 300, 100);
   fill(0);
   textSize(50);
   text("Oh no!", width/2 - 25, height/2 - 20);
@@ -177,6 +166,7 @@ public void displaySettingsButton()
     stroke(0);
     popMatrix();
 }
+
 public void displaySettings()
 {   
     //SETTINGS
@@ -193,6 +183,23 @@ public void displaySettings()
       highlight = false;
     }
 }
+public void closeButton(){
+  rectMode(CENTER);
+  if(countToTen > 0 && released == true){
+    fill(150);
+    rect(width/2 + 150, height/2 - 225, 23, 23);
+  }else if(pressingClose == true){
+    fill(150);
+    rect(width/2 + 150, height/2 - 225, 23, 23);
+  }else{
+    fill(255);
+    rect(width/2 + 150, height/2 - 225, 30, 30);
+  }
+  fill(0);
+  line(width/2 + 150 - 15, height/2 - 225 - 15, width/2 + 150 + 15, height/2 - 225 + 15);
+  line(width/2 + 150 - 15, height/2 - 225 + 15, width/2 + 150 + 15, height/2 - 225 - 15);
+  rectMode(CORNER);
+}
 public void settingsButtons(){
   /*
   -brightness
@@ -203,17 +210,7 @@ public void settingsButtons(){
   -instructions
   */
   //CLOSE SETTINGS
-  rectMode(CENTER);
-  if(pressingClose == true){
-    fill(100);
-  }else{
-    fill(255);
-  }
-  rect(width/2 + 150, height/2 - 225, 30, 30);
-  fill(0);
-  line(width/2 + 150 - 15, height/2 - 225 - 15, width/2 + 150 + 15, height/2 - 225 + 15);
-  line(width/2 + 150 - 15, height/2 - 225 + 15, width/2 + 150 + 15, height/2 - 225 - 15);
-  rectMode(CORNER);
+  closeButton();
   /*
   for(int r = 0; r < 181; r+=60){ // 181
     for(int c = 0; c < 181; c+=180){ // 181
@@ -235,8 +232,6 @@ public void settingsButtons(){
   }
   */
   // DIFFICULTY
-  shiftX = 55;
-  shiftY = 80;
   for(int r = shiftY; r < 101 + shiftY; r+=100){ // 181
     for(int c = shiftX; c < 201 + shiftX; c+=100){ // 181
       fill(255);
@@ -270,25 +265,13 @@ public void settingsButtons(){
     rect(width/2 - 186 + 200 + shiftX, 184 + 100 + shiftY, 12, 12);
   }
   rectMode(CENTER);
-  rect(width/2 - 80 + shiftX, 400 + shiftY, 230, 14);
+  rect(width/2 - 80 + shiftX, 400 + shiftY - 35, 230, 14);
   fill(0);
-  rect(width/2 - 80 + shiftX, 400 + shiftY, 224, 8);
+  rect(width/2 - 80 + shiftX, 400 + shiftY - 35, 224, 8);
   //Brightness scroller
   noStroke();
-  //stroke(255);
-  
   fill(255);
-  //noFill();
-  // 514, 297 // 243, 458
   if(isDrag == true){
-    //if(mouseX > 458 + shiftX){
-    //  setX = 459;
-    //}else if(mouseX < 243 + shiftX){
-    //  setX = 243;
-    //}else{
-    //  
-    //}
-    // -- > 243 - 458 
     if(mouseX <= 458 - 55 + shiftX && mouseX >= 243 - 55 + shiftX){
       setX = mouseX;
     }else if(mouseX > 458 - 55 + shiftX){
@@ -297,19 +280,23 @@ public void settingsButtons(){
       setX = 243 - 55 + shiftX;
     }
     brightness = 458 - setX - 40;
-    // ^^^width/2 - 80 + shiftX is MIDDLE
-    //    width/2 + 28 + shiftX or + 30 is MAX/RIGHT
-    //    width/2 - 188 +  shiftX LOW/LEFT
-    // range is from +28 to -188 |OR| 216
+    /*
+     ^^^width/2 - 80 + shiftX is MIDDLE
+        width/2 + 28 + shiftX or + 30 is MAX/RIGHT
+        width/2 - 188 +  shiftX LOW/LEFT
+        range is from +28 to -188 |OR| 216
+    */
+  }else{
+
   }
-  println(setX);
-  rect(setX, 400 + shiftY, 10, 20);
+  rect(setX, 400 + shiftY - 35, 10, 20);
   stroke(0);
   rectMode(CORNER);
   fill(255);
   textSize(25);
   text("Difficulty", width/2 - 80 + shiftX, 134 + shiftY);
   text("Cursor", width/2 - 80 + shiftX, 234 + shiftY);
+  text("Brightness", width/2 - 80 + shiftX, 367 - 35 + shiftY);
   textSize(18);
   text("Easy", width/2 - 180 + shiftX, 164 + shiftY);
   text("Medium", width/2 - 80 + shiftX, 164 + shiftY);
@@ -318,6 +305,52 @@ public void settingsButtons(){
   text("Pickaxe", width/2 - 80 + shiftX, 264 + shiftY);
   text("Cross", width/2 + 20 + shiftX, 264 + shiftY);
   textSize(12);
+}
+public void displayInfoButton(){
+  stroke(255);
+  fill(255);
+  rectMode(CENTER);
+  rect(width - 25, 70, 48, 48);
+  fill(0);
+  stroke(0);
+  rect(width - 25, 70, 42, 42);
+  
+  fill(255);
+  //stroke(255);
+  noStroke();
+  ellipse(width - 24.5, 70, 35.5, 35.5);
+  fill(0);
+  ellipse(width - 24.5, 70, 29.5, 29.5);
+  fill(255);
+  ellipse(width - 24.5, 61, 6, 6);
+  stroke(255);
+  rect(width - 24.5, 74, 3.5, 8);
+  ellipse(width - 24.5, 69, 3.5, 3.5);
+  ellipse(width - 24.5, 79.5, 3.5, 3.5);
+  stroke(0);
+  rectMode(CORNER);
+}
+public void displayInfo()
+{   
+    //INFO
+    fill(0);
+    rectMode(CENTER);
+    rect(width/2 - 25, height/2, 400, 500);
+    rectMode(CORNER);
+    fill(255);
+    textSize(30);
+    text("Instructions", width/2 - 25, 140);
+    textSize(18);
+    text("The goal of the game is to uncover all\ntiles without hitting any bombs", width/2 - 80 + shiftX, 130 + shiftY);
+    textSize(16);
+    text("Right click or toggle with 'Q' to flag a tile", width/2 - 80 + shiftX, 140 + 60 + shiftY);
+    text("'T' for Assist Mode", width/2 - 80 + shiftX, 140 + 95 + shiftY);
+    text("'R' to reset", width/2 - 80 + shiftX, 130 + 140 + shiftY);
+    textSize(12);
+    closeButton();
+    if(displayInfoBoolean == true){
+      highlight = false;
+    }
 }
 public void screenBrightness(){
   fill(0, brightness);
@@ -364,30 +397,28 @@ public class MSButton
         return clicked;
     }
     public void setBombs()
-{
-  // For a random number of bombs on the map
-  /*
-  int rRow = (int)(Math.random()*NUM_ROWS);
-  int rCol = (int)(Math.random()*NUM_COLS);
-  if(!bombs.contains(buttons[rRow][rCol])){
-    bombs.add(buttons[rRow][rCol]);
-  }
-  */
-  //////////////////////////////////////////
-  
-  // For a set number of bombs on the map
-  //
-  int rRow = (int)(Math.random()*NUM_ROWS);
-  int rCol = (int)(Math.random()*NUM_COLS);
-  while(bombs.contains(buttons[rRow][rCol]) == true || aroundClick.contains(buttons[rRow][rCol]) == true){
-    rRow = (int)(Math.random()*NUM_ROWS);
-    rCol = (int)(Math.random()*NUM_COLS);
-  }
-  bombs.add(buttons[rRow][rCol]);
-
-  //
-  //////////////////////////////////////////
-}
+    {
+      // For a random number of bombs on the map
+      /*
+      int rRow = (int)(Math.random()*NUM_ROWS);
+      int rCol = (int)(Math.random()*NUM_COLS);
+      if(!bombs.contains(buttons[rRow][rCol])){
+        bombs.add(buttons[rRow][rCol]);
+      }
+      */
+      //////////////////////////////////////////
+      // For a set number of bombs on the map
+      //
+      int rRow = (int)(Math.random()*NUM_ROWS);
+      int rCol = (int)(Math.random()*NUM_COLS);
+      while(bombs.contains(buttons[rRow][rCol]) == true || aroundClick.contains(buttons[rRow][rCol]) == true){
+        rRow = (int)(Math.random()*NUM_ROWS);
+        rCol = (int)(Math.random()*NUM_COLS);
+      }
+      bombs.add(buttons[rRow][rCol]);
+      //
+      //////////////////////////////////////////
+    }
     public boolean noneClicked(){
       int clickedNum = 0;
       for(int r = 0; r < buttons.length; r++){
@@ -402,6 +433,22 @@ public class MSButton
       }else{
         return false;
       }
+    }
+    public boolean allClicked(){
+      //int notClicked = 0;
+      //for(int r = 0; r < buttons.length; r++){
+      //  for(int c = 0; c < buttons[0].length; c++){
+      //    if(buttons[r][c].isClicked() || bombs.contains(buttons[r][c])){
+      //    }else{
+      //      notClicked++;
+      //    }
+      //  }
+      //}
+      //if(notClicked == 0){
+      //  return true;
+      //}else{
+      //  return false;
+      //}
     }
     public void mousePressed () 
     {
@@ -418,7 +465,7 @@ public class MSButton
             }
             firstClick = false;
           }
-          if(mouseButton == RIGHT || rightClick == true){
+          if((mouseButton == RIGHT || rightClick == true) && clicked == false){
             marked = !marked;
             if(marked == false){
               clicked = false;
@@ -456,7 +503,10 @@ public class MSButton
     {    
         count++;
         displaySettingsButton();
-        
+        displayInfoButton();
+        if(allClicked() == true){
+          println(true);
+        }
         if(gameOver == true && clicked && bombs.contains(this) ) {
              fill(255,0,0);
         }else if(clicked){
@@ -473,7 +523,6 @@ public class MSButton
           rectMode(CENTER);
           //rect(x, y, 300,300);
           rectMode(CORNER);
-
         }
         /*
         //HIGHLIGHT MODE
@@ -503,8 +552,16 @@ public class MSButton
              curveVertex(x + 20, y + 14);
              curveVertex(x + 18, y + 18);//
              endShape();
+             stroke(0, brightness);
+             beginShape();
+             curveVertex(x + 22, y + 1);//
+             curveVertex(x + 27, y + 7);
+             curveVertex(x + 22, y + 11);
+             curveVertex(x + 21, y + 12);
+             curveVertex(x + 20, y + 14);
+             curveVertex(x + 18, y + 18);//
+             endShape();
         }
-        
         if(highlight){
           fill(HIGHLIGHT_COLOR);
           noStroke();
@@ -528,7 +585,11 @@ public class MSButton
           ellipse(x+width/2,(y+height/2 - 5) + move,width/6, width/2);
           ellipse(x+width/2,(y+height/2 + 10) + move,width/6, width/6);
         }else{
-          text(label,x+width/2,y+height/2);
+          if(canPlay == true && mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height){
+            text(label,x+width/2,(y+height/2) - 4);
+          }else{
+            text(label,x+width/2,y+height/2);
+          }
         }
         if(gameOver == true && bombs.contains(this) == false && marked == true){
           stroke(255,0,0);
@@ -546,6 +607,9 @@ public class MSButton
         }
         if(displaySettingsBoolean == true){
           displaySettings();
+        }
+        if(displayInfoBoolean == true){
+          displayInfo();
         }
         screenBrightness();
     }
@@ -579,6 +643,17 @@ public class MSButton
 }
 public void draw ()
 {
+  if(countTenB == true){
+    countToTen++;
+  }
+  if(released == true && countToTen >= 2){
+    countToTen = 0;
+    countTenB = false;
+    displaySettingsBoolean = false;
+    displayInfoBoolean = false;
+    released = false;
+    canPlay = true;
+  }
   if(bCross == true){
     cursor(CROSS);
   }else if(bPickaxe == true){
@@ -633,13 +708,20 @@ public void draw ()
 }
 public void mousePressed(){
   //SETTINGS
-  if(mouseX > width - 50 && mouseX <  width && mouseY > 0 && mouseY < 50){
+  if(mouseX > width - 50 && mouseX <  width && mouseY > 0 && mouseY < 47.5){
     displaySettingsBoolean = true;
     canPlay = false;
+    displayInfoBoolean = false;
+  }
+  if(mouseX > width - 50 && mouseX <  width && mouseY > 47.5 && mouseY < 100){
+    displayInfoBoolean = true;
+    canPlay = false;
+    displaySettingsBoolean = false;
   }
   if(displaySettingsBoolean == true){
     if(mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
       pressingClose = true;
+      countTenB = true;
     }
     // bOne on/off
     if(mouseX > (width/2 - 190) && mouseY > (180) && mouseX < (width/2 - 170) && mouseY < (200)){
@@ -694,6 +776,12 @@ public void mousePressed(){
       bCross = true;
     }
   }
+  if(displayInfoBoolean == true){
+    if(mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
+      pressingClose = true;
+      countTenB = true;
+    }
+  }
   rect(width/2 - 25, height/2, 400, 500);
   if(gameOver == true){// && canReset == true){
     //width/2 - 25, height/2 + 27.5, 150, 30
@@ -709,19 +797,18 @@ public void mousePressed(){
   }
 }
 public void mouseReleased(){
-  if(pressingClose == true && mouseX > width/2 + 150 - 15 && mouseY > height/2 - 225 - 15 && mouseX < width/2 + 150 + 15 && mouseY < height/2 - 225 + 15){
-    displaySettingsBoolean = false;
+  if(pressingClose == true){
     pressingClose = false;
-    canPlay = true;
+    released = true;
   }
   if(isDrag == true){
     isDrag = false;
   }
 }
 public void mouseDragged(){
-  //Brightness
+  //Brightnessp
     //rect(setX + shiftX, 400 + shiftY, 10, 20); 
-    if(mouseX > setX - 6 && mouseY > 400 + shiftY - 11 && mouseX < setX + 6 && mouseY < 400 + shiftY + 11){
+    if(mouseX > setX - 6 && mouseY > 400 + shiftY - 11 - 35 && mouseX < setX + 6 & mouseY < 400 + shiftY + 11 - 35){
       isDrag = true;
     }
     // 243, 459
